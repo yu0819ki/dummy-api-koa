@@ -75,9 +75,23 @@ var buildWhere = function(whereParams) {
 
 var timestampToDateStr = function (timestamp) {
   var d = new Date(timestamp);
-  return [d.getFullYear(), d.getMonth(), d.getDate()].join('-') + ' '
-      + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+  return [padZero(d.getFullYear(), 4), padZero(d.getMonth(), 2), padZero(d.getDate(), 2)].join('-') + ' '
+      + [padZero(d.getHours(), 2), padZero(d.getMinutes(), 2), padZero(d.getSeconds(), 2)].join(':');
 }
+
+var padZero = function (num, padLen) {
+  num = num * 1;
+  padLen = padLen * 1;
+  if (padLen <= 1) {
+    return num;
+  }
+  var pad = Math.pow(10, padLen);
+  if (num < pad/10) {
+    return (""+(pad + num)).slice(1);
+  }
+  return num;
+}
+
 var ctrlr = {
   index: function *(){
     var pagination = getPagenation(this.query);
