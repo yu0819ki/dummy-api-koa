@@ -72,6 +72,12 @@ var buildWhere = function(whereParams) {
     values: whereValues
   }
 }
+
+var timestampToDateStr = function (timestamp) {
+  var d = new Date(timestamp);
+  return [d.getFullYear(), d.getMonth(), d.getDate()].join('-') + ' '
+      + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+}
 var ctrlr = {
   index: function *(){
     var pagination = getPagenation(this.query);
@@ -93,6 +99,10 @@ var ctrlr = {
     var articles = [];
     try {
       articles = yield query('SELECT * FROM dummy_article ' + pagination.sql.where.phrase + ' LIMIT ?, ?;', pagination.sql.where.values.concat(pagination.sql.limit));
+      for (var i = 0;i < articles.length;i++) {
+        articles[i]['created_str']  = timestampToDateStr(articles[i]['created']);
+        articles[i]['modified_str'] = timestampToDateStr(articles[i]['modified']);
+      }
     } catch (err) {
       console.log(err.message);
     }
